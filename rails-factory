@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+RUBY_VERSION=3.3
+RAILS_VERSION=7.2
+
+is_path() {
+  if [[ -e "$1" ]]; then
+    return 0
+  else
+    echo "'$1' is not a valid path."
+    return 1
+  fi
+}
+
+print_help() {
+  cat <<EOF
+Usage: $0 [options] <path_to_repo>
+
+Options:
+  -b, --build             Build the Docker image
+  -V, --ruby-version      Specify the Ruby version (default: $RUBY_VERSION)
+  -v, --rails-version     Specify the Rails version (default: $RAILS_VERSION)
+  -p, --rails-params      Additional parameters for the 'rails new' command
+  -h, --help              Show this help message
+
+Arguments:
+  <path_to_repo>          Path to the new Rails repository
+
+Example:
+  $0 -b -V 3.3 -v 7.2 -p "--devcontainer" /path/to/new/repo
+EOF
+}
+
+write_dockerfile() {
+  cat <<EOF > Dockerfile
+ARG RUBY_VERSION=3.3
+FROM ruby:${RUBY_VERSION}
+ARG RAILS_VERSION=7.2
+WORKDIR /app
+RUN gem install rails -v ${RAILS_VERSION}
+EOF
+  echo "Dockerfile has been written to the current folder."
+}
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -b|--build)
+      BUILD=true
+      shift
+      ;;
+    -V|--ruby-version)
+      RUBY_VERSION="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -v|--rails-version)
+      RAILS_VERSION="$2"
+      shift
+      shift
+      ;;
+    -p|--rails-params)
+      RAILS_PARAMS="$2"
+      shift
+      shift
+      ;;
+    -h|--help)
+      print_help
+      exit 0
+      ;;
+    *)
+      full_path=`cd $(pwd)/$(dirname "$1") && echo $(pwd)/$(basename "$1")`
+      echo $full_path
+      PATH_TO_REPO=$(dirname "$full_path")
+      NAME=$(basename "$full_path")
+      shift
+      ;;
+  esac
+done
+
+if [ -z "$PATH_TO_REPO" ]; then
+  echo "You must pass in the path to the new repo"
+  exit 1
+fi
+
+if [ "$BUILD" = true ]; then
+  echo "Building image..."
+  write_dockerfile
+  docker build --build-arg RUBY_VERSION=$RUBY_VERSION --build-arg RAILS_VERSION=$RAILS_VERSION -t rails_factory .
+  rm "Dockerfile"
+else
+  echo "Skipping build..."
+fi
+
+image_exists=`docker images | grep rails_factory`
+
+if [ -n "$image_exists" ]; then
+  echo "Generating the new rails repo in $PATH_TO_REPO/$NAME"
+  docker run -it -v $PATH_TO_REPO:/app rails_factory bash -c "rails new $NAME $RAILS_PARAMS"
+else
+  echo "Image does not exist. You must build it first."
+fi
