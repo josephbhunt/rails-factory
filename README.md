@@ -14,24 +14,31 @@ In order to create a new Rails app in a Docker container, the desired versions o
 
 ### Examples:
 ```
-$ rails-factory --build path/to/your/app/app_name
+$ rails-factory path/to/your/app/app_name
 # Will build the Docker image and create a new Rails app in path/to/your/app/app_name
 ```
 
 ```
-$ rails-factory --build -p "--devcontainer" path/to/your/app/app_name
-# Will build the Docker image and create a new Rails app with the --devcontainer option.
+$ rails-factory -p "--devcontainer --skip-action-mailer" path/to/your/app/app_name
+# Will build the Docker image and create a new Rails app with the --devcontainer and --skip-action-mailer options.
 ```
 
 ```
-$ rails-factory -b -V 3.3 -v 7.2 path/to/your/app/app_name
+$ rails-factory -V 3.3 -v 7.2 path/to/your/app/app_name
 # Will build the Docker image and create a Rails app using Ruby version 3.3 and Rails version 7.2
+```
+
+```
+$ rails-factory -s -V 3.3 -v 7.2 path/to/your/app/app_name
+# Will skip building the Docker image and create a Rails app using Ruby version 3.3 and Rails version 7.2
+# If the Docker image for Ruby version 3.3 and Rails version 7.2 does not exist, 
+# then the image will not be found and an error will be returned
 ```
 
 ### Options
 | Option   | Description   |
 |------------|------------|
-| -b \| --build | Build the container used to run `rails new` |
+| -s \| --skip-build | Skip building the Docker image used to run `rails new` |
 | -V \| --ruby-version | Set the ruby version that will be installed in the Docker container |
 | -v \| --rails-version | Set the Rails version to be installed in the Docker container |
 | -p \| --rails-params | String list of params that will be passed to `rails new` |
