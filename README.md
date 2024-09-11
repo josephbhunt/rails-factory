@@ -7,8 +7,17 @@ In order to create a new Rails app in a Docker container, the desired versions o
 `rails-factory` is a simple script for creating a containerized Rails app without having Ruby installed on the host machine. This is meant to be a portable way to create Rails apps. The host machine does not need to have any application dependencies installed - only Bash and Docker, which are common on Unix-like systems.
 
 # Installation
-1. Download rails-factory and copy to a hidden directory in your user home directory. `/Users/YourUsername/.rails_factory/rails-factory` for OSX or `/home/YourUsername/.rails_factory/rails-factory` for Linux. 
-2. Ensure that the directory is added to your path PATH. In .bashrc, .bash_profile, or .zshrc: `export PATH="$HOME/.rails_factory:$PATH"`
+
+### Install script
+Copy and paste this to your terminal and press enter. It will download rails-factory, copy it to `$HOME/bin/`, and add it to your `$PATH` via your `.bashrc` or `.zshrc`. If you don't have either of those files on your system, then you will 
+
+```
+mkdir -p $HOME/bin && curl -L -o $HOME/bin/rails-factory https://raw.githubusercontent.com/josephbhunt/rails-factory/main/rails-factory && chmod +x $HOME/bin/rails-factory && { ! echo $PATH | grep -q "$HOME/bin" && { [ -f ~/.zshrc ] && echo 'export PATH=$PATH:$HOME/bin' >> ~/.zshrc && source ~/.zshrc; } || { [ -f ~/.bashrc ] && echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc && source ~/.bashrc; }; } 
+```
+
+### Manual Install
+1. Download rails-factory and copy to a hidden directory in your user home directory. `/Users/YourUsername/bin/rails-factory` for OSX or `/home/YourUsername/bin/rails-factory` for Linux. 
+2. Ensure that the directory is added to your path PATH. In .bashrc, .bash_profile, or .zshrc: `export PATH="$PATH:$HOME/bin"`
 
 # Usage
 
