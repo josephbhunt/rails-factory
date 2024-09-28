@@ -24,34 +24,45 @@ mkdir -p $HOME/bin && curl -L -o $HOME/bin/rails-factory https://raw.githubuserc
 ### Examples:
 ```
 $ rails-factory path/to/your/app/app_name
-# Will build the Docker image and create a new Rails app in path/to/your/app/app_name
+# Build the Docker image and create a new Rails app in path/to/your/app/app_name
 ```
 
 ```
 $ rails-factory -p "--devcontainer --skip-action-mailer" path/to/your/app/app_name
-# Will build the Docker image and create a new Rails app with the --devcontainer and --skip-action-mailer options.
+# Build the Docker image and create a new Rails app with the --devcontainer and --skip-action-mailer options
 ```
 
 ```
 $ rails-factory -V 3.3 -v 7.2 path/to/your/app/app_name
-# Will build the Docker image and create a Rails app using Ruby version 3.3 and Rails version 7.2
+# Build the Docker image and create a Rails app using Ruby version 3.3 and Rails version 7.2
 ```
 
 ```
 $ rails-factory -s -V 3.3 -v 7.2 path/to/your/app/app_name
-# Will skip building the Docker image and create a Rails app using Ruby version 3.3 and Rails version 7.2
-# If the Docker image for Ruby version 3.3 and Rails version 7.2 does not exist, 
-# then the image will not be found and an error will be returned
+# Skip building the Docker image and create a Rails app using Ruby version 3.3 and Rails version 7.2
+# Assumes the Docker image for Ruby version 3.3 and Rails version 7.2 exists, otherwise returns an error
+```
+
+#### Use your own Rails gem build
+You mush first build the Rails gem on the host machine.
+The name of the gem file must be `rails.gem`.
+```
+$ rails-factory -g path/to/rails.gem path/to/your/app/app_name
+# Builds an image and installs the Rails gem from the given host machine path
+# Then runs `rails new` and creates a Rails app in path/to/your/app/app_name
 ```
 
 ### Options
 | Option   | Description   |
 |------------|------------|
+| -g \| --rails-gem-path | Path to the a Rails gem file on the host machine |
+| -h \| --help | Print this help text |
+| -p \| --rails-params | String list of params that will be passed to `rails new` |
 | -s \| --skip-build | Skip building the Docker image used to run `rails new` |
 | -V \| --ruby-version | Set the ruby version that will be installed in the Docker container |
 | -v \| --rails-version | Set the Rails version to be installed in the Docker container |
-| -p \| --rails-params | String list of params that will be passed to `rails new` |
-| -h \| --help | Print this help text |
+
+
 
 # Requirements
 - OS: Linux or OSX
