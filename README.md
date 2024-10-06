@@ -28,7 +28,7 @@ $ rails-factory path/to/your/app/app_name
 ```
 
 ```
-$ rails-factory -p "--devcontainer --skip-action-mailer" path/to/your/app/app_name
+$ rails-factory path/to/your/app/app_name -- --devcontainer --skip-action-mailer
 # Build the Docker image and create a new Rails app with the --devcontainer and --skip-action-mailer options
 ```
 
@@ -57,12 +57,15 @@ $ rails-factory -g path/to/rails.gem path/to/your/app/app_name
 |------------|------------|
 | -g \| --rails-gem-path | Path to the a Rails gem file on the host machine |
 | -h \| --help | Print this help text |
-| -p \| --rails-params | String list of params that will be passed to `rails new` |
 | -s \| --skip-build | Skip building the Docker image used to run `rails new` |
 | -V \| --ruby-version | Set the ruby version that will be installed in the Docker container |
 | -v \| --rails-version | Set the Rails version to be installed in the Docker container |
 
-
+### Arguments
+| Argument | Description |
+|----------|-------------|
+| path/to/new/rails/app | The path where the new Rails app will be installed on the host machine |
+| -- | End of options. All following arguments will be passed to rails new |
 
 # Requirements
 - OS: Linux or OSX
