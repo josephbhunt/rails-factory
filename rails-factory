@@ -1,16 +1,7 @@
 #!/usr/bin/env bash
 
 RUBY_VERSION=3.3
-RAILS_VERSION=7.2
-
-is_path() {
-  if [[ -e "$1" ]]; then
-    return 0
-  else
-    echo "'$1' is not a valid path."
-    return 1
-  fi
-}
+RAILS_VERSION=7.2.1
 
 print_help() {
   cat <<EOF
@@ -40,6 +31,7 @@ ARG RUBY_VERSION=3.3
 FROM ruby:${RUBY_VERSION}
 ARG RAILS_VERSION=7.2
 WORKDIR /app
+RUN gem update --system
 EOF
 }
 
@@ -71,16 +63,11 @@ while [[ $# -gt 0 ]]; do
       ;;
     -V|--ruby-version)
       RUBY_VERSION="$2"
-      shift # past argument
-      shift # past value
+      shift
+      shift
       ;;
     -v|--rails-version)
       RAILS_VERSION="$2"
-      shift
-      shift
-      ;;
-    -p|--rails-params)
-      RAILS_PARAMS="$2"
       shift
       shift
       ;;
@@ -94,8 +81,13 @@ while [[ $# -gt 0 ]]; do
       shift
       shift
       ;;
+    --)
+      shift
+      RAILS_PARAMS="$*"
+      break
+      ;;      
     *)
-      full_path=`cd $(pwd)/$(dirname "$1") && echo $(pwd)/$(basename "$1")`
+      full_path=`mkdir -p $(dirname "$1") && echo "$1"`
       PATH_TO_REPO=$(dirname "$full_path")
       NAME=$(basename "$full_path")
       shift
@@ -108,7 +100,6 @@ if [ -z "$PATH_TO_REPO" ]; then
   exit 1
 fi
 
-# Build
 if [ "$BUILD" = true ]; then
   echo "Building docker image with command: docker build --build-arg RUBY_VERSION=$RUBY_VERSION --build-arg RAILS_VERSION=$RAILS_VERSION -t $(image_name) ."
   if [ -z "$GEM_PATH" ]; then
