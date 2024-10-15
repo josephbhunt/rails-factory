@@ -71,3 +71,8 @@ $ rails-factory -g path/to/rails.gem path/to/your/app/app_name
 - OS: Linux or OSX
 - Bash: 3.3 or greater
 - Docker: 4.20 or greater
+
+# Contribute
+If you would like to contribute new features or improvement, please open a pull request.
+
+If you think you've spotted a bug, open a Github issue.
