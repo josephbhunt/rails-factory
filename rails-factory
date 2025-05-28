@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-RUBY_VERSION=3.3
-RAILS_VERSION=7.2.1
+RUBY_VERSION=3.4.4
+RAILS_VERSION=8.0.2
 
 print_help() {
   cat <<EOF
